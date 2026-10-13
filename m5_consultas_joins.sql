@@ -64,12 +64,12 @@ LEFT JOIN ventas AS v
 WHERE v.id_venta IS NULL
 ORDER BY p.nombre_producto;
 
-
--- CONSULTA 4: CONSOLIDADO POR ORIGEN
--- UNION ALL: divide las ventas en dos grupos de ejemplo
--- usando el identificador de venta.
--- Las etiquetas son creadas dentro de cada SELECT.
--- No representan canales reales de venta.
+-- ============================================================
+-- CONSULTA 4: CONSOLIDADO DE VENTAS POR PERIODO
+-- UNION ALL + GROUP BY
+-- Objetivo: comparar las ventas de 2025 y 2026.
+-- La columna canal se crea como etiqueta del periodo.
+-- ============================================================
 
 SELECT
     canal,
@@ -78,18 +78,20 @@ FROM (
     SELECT
         fecha_venta,
         cantidad * precio_unitario AS total,
-        'Grupo A - ventas con ID par' AS canal
+        'Ventas 2025' AS canal
     FROM ventas
-    WHERE MOD(id_venta, 2) = 0
+    WHERE fecha_venta >= DATE '2025-01-01'
+      AND fecha_venta < DATE '2026-01-01'
 
     UNION ALL
 
     SELECT
         fecha_venta,
         cantidad * precio_unitario AS total,
-        'Grupo B - ventas con ID impar' AS canal
+        'Ventas 2026' AS canal
     FROM ventas
-    WHERE MOD(id_venta, 2) <> 0
+    WHERE fecha_venta >= DATE '2026-01-01'
+      AND fecha_venta < DATE '2027-01-01'
 ) AS consolidado
 GROUP BY canal
 ORDER BY canal;
