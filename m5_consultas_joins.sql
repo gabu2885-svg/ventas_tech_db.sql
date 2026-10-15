@@ -65,35 +65,18 @@ WHERE v.id_venta IS NULL
 ORDER BY p.nombre_producto;
 
 -- ============================================================
--- CONSULTA 4: CONSOLIDADO DE VENTAS POR PERIODO
--- UNION ALL + GROUP BY
--- Objetivo: comparar las ventas de 2025 y 2026.
--- La columna canal se crea como etiqueta del periodo.
+-- ============================================================
+-- CONSULTA 4: CONSOLIDADO DE VENTAS POR MES
+-- Objetivo: analizar las ventas del periodo disponible.
+-- Los registros existentes corresponden a 2024.
 -- ============================================================
 
 SELECT
-    canal,
-    SUM(total) AS total_canal
-FROM (
-    SELECT
-        fecha_venta,
-        cantidad * precio_unitario AS total,
-        'Ventas 2025' AS canal
-    FROM ventas
-    WHERE fecha_venta >= DATE '2025-01-01'
-      AND fecha_venta < DATE '2026-01-01'
-
-    UNION ALL
-
-    SELECT
-        fecha_venta,
-        cantidad * precio_unitario AS total,
-        'Ventas 2026' AS canal
-    FROM ventas
-    WHERE fecha_venta >= DATE '2026-01-01'
-      AND fecha_venta < DATE '2027-01-01'
-) AS consolidado
-GROUP BY canal
-ORDER BY canal;
+    DATE_TRUNC('month', fecha_venta)::DATE AS periodo,
+    COUNT(*) AS cantidad_ventas,
+    SUM(cantidad * precio_unitario) AS total_ventas
+FROM ventas
+GROUP BY DATE_TRUNC('month', fecha_venta)
+ORDER BY periodo;
 
 
