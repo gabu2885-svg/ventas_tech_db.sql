@@ -65,7 +65,6 @@ WHERE v.id_venta IS NULL
 ORDER BY p.nombre_producto;
 
 -- ============================================================
--- ============================================================
 -- CONSULTA 4: CONSOLIDADO DE VENTAS POR MES
 -- Objetivo: analizar las ventas del periodo disponible.
 -- Los registros existentes corresponden a 2024.
@@ -79,4 +78,27 @@ FROM ventas
 GROUP BY DATE_TRUNC('month', fecha_venta)
 ORDER BY periodo;
 
+-- CONSULTA 5: CLIENTES QUE NUNCA COMPRARON
+-- Objetivo: identificar clientes sin ventas registradas.
 
+SELECT
+    c.id_cliente,
+    c.nombre,
+    c.email
+FROM clientes AS c
+LEFT JOIN ventas AS v
+    ON c.id_cliente = v.id_cliente
+WHERE v.id_venta IS NULL
+ORDER BY c.nombre;
+
+-- CONSULTA 6: RESUMEN GENERAL DE VENTAS
+-- Objetivo: conocer la cantidad de operaciones,
+-- unidades vendidas y facturación total.
+
+SELECT
+    COUNT(*) AS cantidad_ventas,
+    SUM(cantidad) AS unidades_vendidas,
+    SUM(cantidad * precio_unitario) AS facturacion_total,
+    MIN(fecha_venta) AS primera_venta,
+    MAX(fecha_venta) AS ultima_venta
+FROM ventas;
