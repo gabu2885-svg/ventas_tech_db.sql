@@ -78,20 +78,9 @@ FROM ventas
 GROUP BY DATE_TRUNC('month', fecha_venta)
 ORDER BY periodo;
 
--- CONSULTA 5: CLIENTES QUE NUNCA COMPRARON
--- Objetivo: identificar clientes sin ventas registradas.
 
-SELECT
-    c.id_cliente,
-    c.nombre,
-    c.email
-FROM clientes AS c
-LEFT JOIN ventas AS v
-    ON c.id_cliente = v.id_cliente
-WHERE v.id_venta IS NULL
-ORDER BY c.nombre;
 
--- CONSULTA 6: RESUMEN GENERAL DE VENTAS
+-- CONSULTA 5: RESUMEN GENERAL DE VENTAS
 -- Objetivo: conocer la cantidad de operaciones,
 -- unidades vendidas y facturación total.
 
