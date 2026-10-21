@@ -37,6 +37,7 @@ ORDER BY v.fecha_venta;
 -- LEFT JOIN + IS NULL.
 -- Objetivo: identificar clientes que nunca compraron.
 
+
 SELECT
     c.nombre,
     c.email,
@@ -46,6 +47,10 @@ LEFT JOIN ventas AS v
     ON c.id_cliente = v.id_cliente
 WHERE v.id_venta IS NULL
 ORDER BY c.nombre;
+
+-- Hallazgo: Se identificó 1 cliente sin ventas registradas.
+-- Desde el área de CRM, este resultado permite detectar clientes
+-- sin compras y evaluar acciones de seguimiento o activación comercial.
 
 
 -- CONSULTA 3: PRODUCTOS SIN VENTAS
@@ -63,6 +68,11 @@ LEFT JOIN ventas AS v
     ON p.id_producto = v.id_producto
 WHERE v.id_venta IS NULL
 ORDER BY p.nombre_producto;
+
+-- Hallazgo: Se identificó 1 producto sin ventas registradas.
+-- Para el área de producto, este resultado permite revisar
+-- la visibilidad del artículo, las acciones promocionales
+-- y la planificación del stock.
 
 -- ============================================================
 -- CONSULTA 4: CONSOLIDADO DE VENTAS POR MES
