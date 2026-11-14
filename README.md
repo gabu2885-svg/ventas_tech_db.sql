@@ -40,7 +40,7 @@ Caso académico de análisis comercial para una empresa distribuidora de tecnolo
 | **Power BI** | Modelado y análisis visual. |
 | **GitHub** | Versionado y documentación. |
 
-> Los archivos de Excel, Power Query y Power BI **no forman parte del contenido actual del repositorio** (solo contiene scripts `.sql`). _(Pendiente de confirmar: dónde se almacenan o si se agregarán.)_
+> Los archivos de Excel, Power Query y Power BI corresponden a etapas complementarias del trabajo académico, pero no están incluidos en este repositorio. Este repositorio contiene los scripts SQL utilizados para el modelado, la carga de datos y las consultas de análisis.
 
 ## 3. Modelo de datos
 
@@ -149,7 +149,18 @@ El repositorio contiene tres scripts SQL en su raíz:
 | Script | Propósito |
 |---|---|
 | `ventas_tech_db.sql` | Crea el esquema y carga los datos. Secciones: `DROP`, `CREATE`, `INSERT` y `VALIDACIÓN`. Corresponde al Módulo 3. |
-| `m4_consultas_negocio.sql` | Consultas de negocio del Módulo 4. _(Pendiente de confirmar: listado y propósito de cada consulta.)_ |
+|`m4_consultas_negocio.sql` | Consultas de negocio del Módulo 4: resumen ejecutivo mensual, ranking de los cinco productos con mayor facturación, clientes con más de un pedido y comparación de ventas mensuales respecto del promedio.
+
+### `m4_consultas_negocio.sql`
+
+| # | Consulta | Técnica | Propósito |
+|---|---|---|---|
+| 1 | Resumen ejecutivo mensual | `SUM`, `COUNT`, `AVG`, `GROUP BY` | Calcular facturación total, cantidad de pedidos y ticket promedio por mes. |
+| 2 | Top 5 de productos por facturación | `SUM`, `GROUP BY`, `ORDER BY`, `LIMIT 5` | Identificar los cinco productos con mayor facturación y sus unidades vendidas. |
+| 3 | Clientes con más de un pedido | `COUNT`, `SUM`, `GROUP BY`, `HAVING` | Reconocer clientes recurrentes y analizar cuánto gastaron. |
+| 4 | Meses comparados con el promedio | CTE, `AVG`, `CASE` | Comparar la facturación de cada mes con el promedio mensual calculado. |
+
+**Consideración:** la consulta 2 devuelve únicamente los cinco productos con mayor facturación, no el total de productos vendidos. La consulta 4 agrupa por número de mes (`EXTRACT(MONTH)`), por lo que, si se incorporan datos de varios años, sería necesario distinguir también el año para evitar agrupar meses de períodos diferentes.
 | `m5_consultas_joins.sql` | Pre-entrega del Módulo 5: consultas que cruzan tablas. Detalle abajo. |
 
 ### `m5_consultas_joins.sql`
@@ -169,10 +180,12 @@ Hallazgos documentados en los comentarios del propio script:
 - La consulta 3 identificó 1 producto sin ventas.
 - La consulta 4 devolvió 2 filas de resumen, una por cada canal simulado.
 - La consulta 5 devolvió 1 fila con 5 indicadores.
+- 
+- > **Aclaración sobre los resultados:** las consultas 2 y 3 identifican clientes y productos sin ventas según los registros existentes al momento de la ejecución. Durante las pruebas se utilizaron registros adicionales de prueba para validar estos casos. Esos registros no forman parte de la carga inicial de 25 registros definida en `ventas_tech_db.sql`. Por lo tanto, los resultados pueden variar si se ejecuta el proyecto desde una base limpia.
 
 ## 5. Requisitos
 
-- **PostgreSQL** instalado y en ejecución. _(Versión mínima: pendiente de confirmar.)_
+- **PostgreSQL** El proyecto utiliza sentencias SQL compatibles con PostgreSQL; no se especifica una versión mínima en los scripts.
 - Un usuario con permisos para crear una base de datos y crear/eliminar tablas.
 - Un cliente SQL: `psql` (línea de comandos) o una herramienta gráfica como pgAdmin o DBeaver.
 - Los scripts no requieren extensiones adicionales según lo revisado. _(Pendiente de confirmar para `m4_consultas_negocio.sql`.)_
@@ -190,11 +203,9 @@ El orden importa: **primero se crea y carga la base, y recién después se ejecu
 
 2. **Crear la base de datos** (si no existe).
 
+
    ```sql
    CREATE DATABASE ventas_tech_db;
-   ```
-
-   _(Pendiente de confirmar: si `ventas_tech_db.sql` ya incluye la creación de la base. Por defecto se asume que no.)_
 
 3. **Crear las tablas y cargar los datos** ejecutando `ventas_tech_db.sql` sobre `ventas_tech_db`.
 
